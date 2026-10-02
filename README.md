@@ -2,7 +2,7 @@
 
 A clean, single-page barcode generator built with plain HTML, CSS, and JavaScript. Encode text, product codes, and IDs into a styled, downloadable barcode, no build tools, no dependencies to install.
 
-![Devex preview](preview.png)
+![Devex preview](screenshots/preview.png)
 
 ## Features
 
@@ -61,6 +61,11 @@ No installation needed.
 - [ ] QR code mode alongside 1D barcodes
 
 Contributions and suggestions are welcome, feel free to open an issue or a pull request.
+
+## Screenshots
+
+![Devex QR Studio Interface](screenshots/interface.jpg)
+![QR Code Preview](screenshots/br-preview.png)
 
 ## License
 
