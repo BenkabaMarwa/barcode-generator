@@ -1,19 +1,19 @@
 # Devex | Barcode Generator
 
-A clean, single-page barcode generator built with plain HTML, CSS, and JavaScript. Encode text, product codes, and IDs into a styled, downloadable barcode — no build tools, no dependencies to install.
+A clean, single-page barcode generator built with plain HTML, CSS, and JavaScript. Encode text, product codes, and IDs into a styled, downloadable barcode, no build tools, no dependencies to install.
 
 ![Devex preview](preview.png)
 
 ## Features
 
-- **9 barcode formats** — CODE 128, CODE 39, EAN-13, EAN-8, UPC-A, ITF-14, MSI, Pharmacode, Codabar
-- **Live format hints** — see exactly what each format expects before you type
-- **Custom styling** — pick your own line/background colors, bar width, and bar height
+- **9 barcode formats** - CODE 128, CODE 39, EAN-13, EAN-8, UPC-A, ITF-14, MSI, Pharmacode, Codabar
+- **Live format hints** - see exactly what each format expects before you type
+- **Custom styling** - pick your own line/background colors, bar width, and bar height
 - **Toggleable readable text** under the bars
-- **Export options** — download as PNG or SVG
-- **One-click Clear** — reset the whole form instantly
-- **Responsive, dark glassmorphic UI** — works on desktop and mobile
-- **Zero build step** — a single `index.html` file, ready to open or deploy anywhere
+- **Export options** - download as PNG or SVG
+- **One-click Clear** - reset the whole form instantly
+- **Responsive, dark glassmorphic UI** - works on desktop and mobile
+- **Zero build step** - a single `index.html` file, ready to open or deploy anywhere
 
 ## Getting Started
 
@@ -21,18 +21,9 @@ No installation needed.
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/BenkabaMarwa/devex-barcode-generator.git
+   git clone https://github.com/BenkabaMarwa/barcode-generator.git
    ```
 2. Open `index.html` in your browser.
-
-That's it — the app runs entirely client-side.
-
-### Deploying
-
-Since it's a single static file, you can host it anywhere:
-- **GitHub Pages** — enable Pages on this repo (Settings → Pages → deploy from `main`)
-- **Netlify / Vercel** — drag and drop the folder
-- Any static file host
 
 ## Tech Stack
 
@@ -44,7 +35,7 @@ Since it's a single static file, you can host it anywhere:
 ## Usage
 
 1. Choose a **Barcode Format** from the dropdown.
-2. Enter the **data to encode** — follow the hint shown under the dropdown for valid input (e.g. EAN-13 needs 12–13 digits).
+2. Enter the **data to encode**: follow the hint shown under the dropdown for valid input (e.g. EAN-13 needs 12–13 digits).
 3. Adjust colors, bar width, and bar height as needed.
 4. Click **Generate Barcode**.
 5. Download your barcode as **PNG** or **SVG**, or hit **Clear** to start over.
@@ -69,7 +60,7 @@ Since it's a single static file, you can host it anywhere:
 - [ ] Saved presets for colors/sizes
 - [ ] QR code mode alongside 1D barcodes
 
-Contributions and suggestions are welcome — feel free to open an issue or a pull request.
+Contributions and suggestions are welcome, feel free to open an issue or a pull request.
 
 ## License
 
