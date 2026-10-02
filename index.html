@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Devex | Barcode Generator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.12.3/JsBarcode.all.min.js"></script>
+    <style>
+      :root {
+        --bg: #0b0f1a;
+        --bg2: #0f1524;
+        --card: rgba(255, 255, 255, 0.04);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --accent: #2f8cff;
+        --accent-soft: rgba(47, 140, 255, 0.15);
+        --pink: #ff5da2;
+        --text: #eef1f7;
+        --muted: #8b93a7;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        background: radial-gradient(circle at 20% 0%, #14203a 0%, var(--bg) 45%),
+          var(--bg);
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        min-height: 100vh;
+      }
+      .glow {
+        position: fixed; width: 520px; height: 520px; border-radius: 50%;
+        background: var(--accent); filter: blur(140px); opacity: 0.18;
+        top: -180px; right: -160px; pointer-events: none;
+      }
+      .glow.two {
+        background: var(--pink); opacity: 0.1; top: auto; right: auto;
+        bottom: -200px; left: -160px;
+      }
+      .wrap { position: relative; max-width: 980px; margin: 0 auto; padding: 48px 24px 40px; }
+      nav { display: flex; align-items: center; gap: 12px; margin-bottom: 44px; }
+      .mark {
+        width: 40px; height: 40px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent), #7ab8ff);
+        display: grid; place-items: center; font-weight: 800;
+        font-family: "Poppins", sans-serif; color: #06111f;
+        box-shadow: 0 8px 24px rgba(47, 140, 255, 0.35);
+      }
+      .brand { font-family: "Poppins", sans-serif; font-weight: 700; font-size: 1.25rem; letter-spacing: -0.01em; }
+      .badge {
+        margin-left: auto; font-size: 0.7rem; color: var(--accent);
+        background: var(--accent-soft); border: 1px solid rgba(47, 140, 255, 0.3);
+        padding: 5px 12px; border-radius: 999px; font-weight: 600;
+      }
+      .hero { margin-bottom: 36px; }
+      .hero h1 {
+        font-family: "Poppins", sans-serif; font-weight: 800;
+        font-size: clamp(1.9rem, 4.5vw, 2.9rem); letter-spacing: -0.02em;
+        line-height: 1.15; margin-bottom: 10px;
+      }
+      .hero h1 span {
+        background: linear-gradient(90deg, var(--accent), #7ab8ff);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .hero p { color: var(--muted); font-size: 0.98rem; }
+
+      .grid2 { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; }
+      @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+
+      .card {
+        background: var(--card); border: 1px solid var(--card-border);
+        border-radius: 20px; padding: 26px; backdrop-filter: blur(16px);
+      }
+      .card h3 {
+        font-family: "Poppins", sans-serif; font-size: 0.85rem; font-weight: 600;
+        color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 18px;
+      }
+
+      .field { margin-bottom: 14px; }
+      label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+      input[type="text"], select {
+        width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border);
+        color: var(--text); font-family: "Inter", sans-serif; font-size: 0.9rem;
+        padding: 11px 14px; border-radius: 12px; outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      input[type="text"]:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+      select {
+        cursor: pointer; appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238b93a7'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 14px center;
+      }
+      select option { background: #121826; color: #eef1f7; padding: 10px; }
+      select option:checked, select option:hover { background: var(--accent); color: #06111f; }
+
+      .hint { font-size: 0.72rem; color: var(--muted); margin-top: 6px; }
+
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .color-pick {
+        display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--card-border); border-radius: 12px; padding: 8px 12px;
+      }
+      .color-pick label { margin: 0; font-size: 0.75rem; white-space: nowrap; }
+      input[type="color"] {
+        width: 26px; height: 26px; padding: 0; border: none;
+        border-radius: 6px; overflow: hidden; background: none; cursor: pointer; flex-shrink: 0;
+      }
+
+      .slider-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+      .slider-val { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+      input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+
+      .toggle-row {
+        display: flex; align-items: center; justify-content: space-between;
+        background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border);
+        border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
+      }
+      .toggle-row label { margin: 0; font-size: 0.85rem; color: var(--text); font-weight: 500; }
+      input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+
+      .btn-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 6px; }
+      .btn-generate {
+        background: linear-gradient(135deg, var(--accent), #7ab8ff); border: none; color: #06111f;
+        font-family: "Poppins", sans-serif; font-weight: 700; font-size: 0.9rem;
+        padding: 14px; border-radius: 12px; cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.2s;
+      }
+      .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(47, 140, 255, 0.35); }
+      .btn-clear {
+        background: transparent; border: 1px solid var(--card-border); color: var(--muted);
+        font-family: "Poppins", sans-serif; font-weight: 600; font-size: 0.85rem;
+        padding: 14px 18px; border-radius: 12px; cursor: pointer; transition: all 0.2s;
+      }
+      .btn-clear:hover { border-color: var(--pink); color: var(--pink); }
+
+      .output-card { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 340px; }
+      .barcode-frame {
+        padding: 22px 18px; background: #fff; border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(47, 140, 255, 0.2); margin-bottom: 22px;
+        transition: box-shadow 0.3s; width: 100%; display: flex; justify-content: center;
+      }
+      #barcode-placeholder {
+        min-width: 220px; min-height: 120px; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 10px; color: #b7bccb;
+      }
+      #barcode-placeholder p { font-size: 0.78rem; text-align: center; }
+      #barcode-svg { display: none; max-width: 100%; }
+
+      .dl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; opacity: 0; transform: translateY(8px); transition: all 0.35s; }
+      .dl-row.visible { opacity: 1; transform: translateY(0); }
+      .btn-dl {
+        background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--text);
+        font-size: 0.78rem; font-weight: 600; padding: 11px; border-radius: 10px; cursor: pointer; transition: all 0.2s;
+      }
+      .btn-dl:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+      .btn-dl.svg-btn:hover { border-color: #ffd166; color: #ffd166; background: rgba(255, 209, 102, 0.08); }
+
+      .status { font-size: 0.75rem; color: var(--accent); text-align: center; height: 16px; margin-top: 12px; opacity: 0; transition: opacity 0.3s; font-weight: 500; }
+      .status.show { opacity: 1; }
+
+      footer { position: relative; text-align: center; padding: 36px 20px 8px; color: var(--muted); font-size: 0.78rem; }
+      footer .credit { margin-bottom: 12px; }
+      footer .credit a { color: var(--accent); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--accent-soft); }
+      .social-row { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
+      .social-row a {
+        width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+        background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--muted); transition: all 0.2s;
+      }
+      .social-row a:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+      .social-row svg { width: 18px; height: 18px; fill: currentColor; }
+      .copyright { font-size: 0.7rem; color: #5a6178; letter-spacing: 0.02em; }
+    </style>
+  </head>
+  <body>
+    <div class="glow"></div>
+    <div class="glow two"></div>
+
+    <div class="wrap">
+      <nav>
+        <div class="mark">MB</div>
+        <div class="brand">Marwa Benkaba</div>
+        <div class="badge">Barcode Studio</div>
+      </nav>
+
+      <div class="hero">
+        <h1>Turn any code into<br /><span>a scannable barcode.</span></h1>
+        <p>Type it, style it, download it - your barcode in one go.</p>
+      </div>
+
+      <div class="grid2">
+        <!-- LEFT: Controls -->
+        <div class="card" id="control-panel">
+          <h3>Configuration</h3>
+
+          <div class="field">
+            <label>Barcode Format</label>
+            <select id="format-select" onchange="updateHint()">
+              <option value="CODE128">CODE 128 (any text)</option>
+              <option value="CODE39">CODE 39</option>
+              <option value="EAN13">EAN-13 (13 digits)</option>
+              <option value="EAN8">EAN-8 (8 digits)</option>
+              <option value="UPC">UPC-A (12 digits)</option>
+              <option value="ITF14">ITF-14 (14 digits)</option>
+              <option value="MSI">MSI</option>
+              <option value="pharmacode">Pharmacode</option>
+              <option value="codabar">Codabar</option>
+            </select>
+            <div class="hint" id="format-hint">Accepts letters, numbers and symbols.</div>
+          </div>
+
+          <div class="field">
+            <label>Data to encode</label>
+            <input type="text" id="bc-input" placeholder="e.g. 012345678905" />
+          </div>
+
+          <div class="toggle-row">
+            <label for="show-text">Show readable text under bars</label>
+            <input type="checkbox" id="show-text" checked />
+          </div>
+
+          <div class="row2" style="margin-bottom:14px">
+            <div class="color-pick">
+              <input type="color" id="line-color" value="#000000" oninput="updateColorLabel(this, 'line-label')" />
+              <label id="line-label">Lines #000000</label>
+            </div>
+            <div class="color-pick">
+              <input type="color" id="bg-color" value="#ffffff" oninput="updateColorLabel(this, 'bg-label')" />
+              <label id="bg-label">Background #ffffff</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="slider-row"><label style="margin:0">Bar width</label><span class="slider-val" id="width-val">2 px</span></div>
+            <input type="range" id="bar-width" min="1" max="4" value="2" step="0.5"
+              oninput="document.getElementById('width-val').textContent = this.value + ' px'" />
+          </div>
+
+          <div class="field">
+            <div class="slider-row"><label style="margin:0">Bar height</label><span class="slider-val" id="height-val">100 px</span></div>
+            <input type="range" id="bar-height" min="50" max="220" value="100" step="10"
+              oninput="document.getElementById('height-val').textContent = this.value + ' px'" />
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-generate" onclick="generateBarcode()">Generate Barcode</button>
+            <button class="btn-clear" onclick="clearAll()">Clear</button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Output -->
+        <div class="card output-card">
+          <h3>Output</h3>
+          <div class="barcode-frame" id="barcode-frame">
+            <div id="barcode-placeholder">
+              <svg width="70" height="48" viewBox="0 0 70 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="2" width="3" height="44" fill="#b7bccb" />
+                <rect x="8" y="2" width="2" height="44" fill="#b7bccb" />
+                <rect x="13" y="2" width="4" height="44" fill="#b7bccb" />
+                <rect x="20" y="2" width="2" height="44" fill="#b7bccb" />
+                <rect x="25" y="2" width="3" height="44" fill="#b7bccb" />
+                <rect x="31" y="2" width="2" height="44" fill="#b7bccb" />
+                <rect x="36" y="2" width="5" height="44" fill="#b7bccb" />
+                <rect x="44" y="2" width="2" height="44" fill="#b7bccb" />
+                <rect x="49" y="2" width="3" height="44" fill="#b7bccb" />
+                <rect x="55" y="2" width="2" height="44" fill="#b7bccb" />
+                <rect x="60" y="2" width="4" height="44" fill="#b7bccb" />
+                <rect x="66" y="2" width="2" height="44" fill="#b7bccb" />
+              </svg>
+              <p>Your barcode<br />will appear here</p>
+            </div>
+            <svg id="barcode-svg"></svg>
+          </div>
+          <div class="dl-row" id="dl-row">
+            <button class="btn-dl" onclick="downloadPNG()">↓ PNG</button>
+            <button class="btn-dl svg-btn" onclick="downloadSVG()">↓ SVG</button>
+          </div>
+          <div class="status" id="status-msg"></div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="credit">Created by <a href="https://github.com/BenkabaMarwa" target="_blank" rel="noopener">Marwa Benkaba</a></div>
+        <div class="social-row">
+          <a href="https://github.com/BenkabaMarwa" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg viewBox="0 0 24 24"><path d="M12 .5C5.73.5.98 5.24.98 11.52c0 5.02 3.26 9.28 7.79 10.78.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.17.69-3.84-1.35-3.84-1.35-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.25 3.33.96.1-.74.4-1.25.72-1.54-2.53-.29-5.19-1.27-5.19-5.63 0-1.24.44-2.26 1.17-3.06-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.17a10.9 10.9 0 0 1 5.73 0c2.19-1.48 3.15-1.17 3.15-1.17.62 1.57.23 2.73.11 3.02.73.8 1.17 1.82 1.17 3.06 0 4.37-2.67 5.33-5.21 5.62.41.35.77 1.04.77 2.1 0 1.52-.01 2.74-.01 3.11 0 .3.21.66.79.55A10.53 10.53 0 0 0 23.02 11.5C23.02 5.24 18.27.5 12 .5z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/marwa-benkaba-916090329/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          </a>
+        </div>
+        <div class="copyright">© 2026 Marwa Benkaba. All rights reserved.</div>
+      </footer>
+    </div>
+
+    <script>
+      const hints = {
+        CODE128: "Accepts letters, numbers and symbols.",
+        CODE39: "Uppercase letters, numbers and - . $ / + % space.",
+        EAN13: "Exactly 12 or 13 digits.",
+        EAN8: "Exactly 7 or 8 digits.",
+        UPC: "Exactly 11 or 12 digits.",
+        ITF14: "Exactly 13 or 14 digits.",
+        MSI: "Numbers only.",
+        pharmacode: "A number between 3 and 131070.",
+        codabar: "Numbers and A-D start/stop characters.",
+      };
+
+      const examples = {
+        CODE128: "Hello World 123!",
+        CODE39: "HELLO-123",
+        EAN13: "5901234123457",
+        EAN8: "96385074",
+        UPC: "036000291452",
+        ITF14: "00012345678905",
+        MSI: "1234567",
+        pharmacode: "12345",
+        codabar: "A123456A",
+      };
+
+      function updateHint() {
+        const format = document.getElementById("format-select").value;
+        document.getElementById("format-hint").textContent = hints[format];
+        document.getElementById("bc-input").placeholder = "e.g. " + examples[format];
+      }
+      updateHint();
+
+      function updateColorLabel(input, labelId) {
+        const label = document.getElementById(labelId);
+        const prefix = labelId === "line-label" ? "Lines " : "Background ";
+        label.textContent = prefix + input.value.toUpperCase();
+      }
+
+      function showStatus(msg, color = "#2f8cff") {
+        const el = document.getElementById("status-msg");
+        el.textContent = msg;
+        el.style.color = color;
+        el.classList.add("show");
+        setTimeout(() => el.classList.remove("show"), 2500);
+      }
+
+      function generateBarcode() {
+        const value = document.getElementById("bc-input").value.trim();
+        if (!value) {
+          showStatus("⚠ Please enter data to encode", "#ff5da2");
+          return;
+        }
+
+        const format = document.getElementById("format-select").value;
+        const lineColor = document.getElementById("line-color").value;
+        const bgColor = document.getElementById("bg-color").value;
+        const showText = document.getElementById("show-text").checked;
+        const width = parseFloat(document.getElementById("bar-width").value);
+        const height = parseInt(document.getElementById("bar-height").value);
+
+        const svg = document.getElementById("barcode-svg");
+
+        if (typeof JsBarcode === "undefined") {
+          showStatus("⚠ Barcode library failed to load — check your connection", "#ff5da2");
+          return;
+        }
+
+        try {
+          JsBarcode(svg, value, {
+            format: format,
+            lineColor: lineColor,
+            background: bgColor,
+            width: width,
+            height: height,
+            displayValue: showText,
+            margin: 14,
+            fontSize: 16,
+          });
+        } catch (e) {
+          showStatus("⚠ Invalid data for this format", "#ff5da2");
+          return;
+        }
+
+        document.getElementById("barcode-placeholder").style.display = "none";
+        svg.style.display = "block";
+        document.getElementById("dl-row").classList.add("visible");
+        showStatus("✓ Barcode generated successfully", "#2f8cff");
+      }
+
+      function clearAll() {
+        document.getElementById("format-select").value = "CODE128";
+        updateHint();
+        document.getElementById("bc-input").value = "";
+        document.getElementById("show-text").checked = true;
+        document.getElementById("line-color").value = "#000000";
+        document.getElementById("bg-color").value = "#ffffff";
+        updateColorLabel(document.getElementById("line-color"), "line-label");
+        updateColorLabel(document.getElementById("bg-color"), "bg-label");
+        document.getElementById("bar-width").value = 2;
+        document.getElementById("width-val").textContent = "2 px";
+        document.getElementById("bar-height").value = 100;
+        document.getElementById("height-val").textContent = "100 px";
+
+        const svg = document.getElementById("barcode-svg");
+        svg.innerHTML = "";
+        svg.style.display = "none";
+        document.getElementById("barcode-placeholder").style.display = "flex";
+        document.getElementById("dl-row").classList.remove("visible");
+        showStatus("Cleared", "#8b93a7");
+      }
+
+      function downloadSVG() {
+        const svg = document.getElementById("barcode-svg");
+        if (!svg.innerHTML.trim()) { showStatus("⚠ Generate a barcode first", "#ff5da2"); return; }
+        const xml = new XMLSerializer().serializeToString(svg);
+        const blob = new Blob([xml], { type: "image/svg+xml" });
+        const link = document.createElement("a");
+        link.download = "barcode.svg";
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        showStatus("↓ SVG downloaded!", "#ffd166");
+      }
+
+      function downloadPNG() {
+        const svg = document.getElementById("barcode-svg");
+        if (!svg.innerHTML.trim()) { showStatus("⚠ Generate a barcode first", "#ff5da2"); return; }
+
+        const xml = new XMLSerializer().serializeToString(svg);
+        const svg64 = btoa(unescape(encodeURIComponent(xml)));
+        const image64 = "data:image/svg+xml;base64," + svg64;
+        const img = new Image();
+
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = document.getElementById("bg-color").value;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          const link = document.createElement("a");
+          link.download = "barcode.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+          showStatus("↓ PNG downloaded!", "#2f8cff");
+        };
+        img.src = image64;
+      }
+    </script>
+  </body>
+</html>
