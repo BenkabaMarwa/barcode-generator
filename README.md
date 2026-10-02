@@ -2,7 +2,7 @@
 
 A clean, single-page barcode generator built with plain HTML, CSS, and JavaScript. Encode text, product codes, and IDs into a styled, downloadable barcode, no build tools, no dependencies to install.
 
-![Devex preview](screenshots/preview.png)
+![Devex preview](screenshots/preview.jpg)
 
 ## Features
 
