@@ -73,6 +73,10 @@ Contributions and suggestions are welcome, feel free to open an issue or a pull 
 - GitHub: [@BenkabaMarwa](https://github.com/BenkabaMarwa)
 - LinkedIn: [marwa-benkaba](https://www.linkedin.com/in/marwa-benkaba-916090329/)
 
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
 ---
 
 © 2026 Marwa Benkaba. All rights reserved.
