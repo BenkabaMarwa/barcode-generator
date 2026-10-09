@@ -67,10 +67,6 @@ Contributions and suggestions are welcome, feel free to open an issue or a pull 
 ![Devex QR Studio Interface](screenshots/interface.jpg)
 ![QR Code Preview](screenshots/br-preview.png)
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
 ## Author
 
 **Marwa Benkaba**
